@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
+pre-commit:
+  files: git diff --cached --name-only --diff-filter=ACMR
+  commands: &checks
+    lint:
+      priority: 1
+      glob: "**/*.{ts,tsx,mts,cts,js}"
+      run: npx oxlint --fix {files}
+      stage_fixed: true
+    md:
+      priority: 1
+      glob: "**/*.md"
+      run: npx markdownlint-cli2 --fix {files}
+      stage_fixed: true
+    fmt:
+      priority: 2
+      glob: "**/*.{ts,tsx,mts,cts,js,json,jsonc,md,yml,yaml}"
+      # oxfmt errors when every staged file is ignored; oxlint exits 0 and needs no guard
+      run: npx oxfmt --no-error-on-unmatched-pattern {files}
+      stage_fixed: true
+    type:
+      priority: 3
+      glob: "**/*.{ts,tsx,mts,cts}"
+      run: npx tsc -p tsconfig.json --noEmit
+    quality:
+      priority: 3
+      glob: "**/*.{ts,tsx,mts,cts,js,json}"
+      run: npx fallow --fail-on-issues --quiet
+    typelint:
+      priority: 3
+      glob: "**/*.{ts,tsx,mts,cts}"
+      run: npx oxlint --type-aware
+    spelling:
+      priority: 3
+      glob: "**/*.{ts,tsx,mts,cts,md}"
+      run: npx cspell --no-progress --no-summary --no-must-find-files {files}
+    actions:
+      priority: 3
+      glob: ".github/workflows/*.yml"
+      run: actionlint {files} && zizmor --persona=pedantic {files}
+
+check:
+  files: git ls-files --cached --others --exclude-standard
+  commands:
+    <<: *checks
+    mod:
+      priority: 4
+      glob: "{.claude-plugin,hooks,types,tests}/**"
+      run: npx claude plugin validate --strict .
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+
+pre-push:
+  commands:
+    test:
+      priority: 1
+      run: npm test
+    check:
+      priority: 2
+      run: npm run check
