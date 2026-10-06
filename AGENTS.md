@@ -57,15 +57,16 @@ user and wait for explicit approval; never promote a suppression into config on 
 
 ## Doc comments
 
-TSDoc. None is required on private functions, parameterless void functions, or non-function symbols.
-A one-line doc comment is complete on its own — no `@param`, `@returns`, or `@throws` tags — when
-the signature says the rest. When a function needs more than one line (a side effect, an invariant, a
-precondition, what `undefined` means, or behavior the name does not convey), use a multi-line doc
-comment with tags: `@param` for every parameter, however obvious its name, `@returns`, and `@throws`
-for every error thrown or propagated. Parameters, return values, and errors are described only in
-their tags, never in prose. A function you edit gets its doc comment brought to this shape even if
-you did not write it; deadlines and reviewer preference do not change that. Tests: no doc comments on
-test cases, the title carries the intent; shared helpers get a one-line summary.
+TSDoc. None is required on private functions, void functions without parameters, or non-function
+symbols. A one-line doc comment is complete on its own — no `@param`, `@returns`, or `@throws` tags
+— when the signature says the rest. When a function needs more than one line (a side effect, an
+invariant, a precondition, what `undefined` means, or behavior the name does not convey), use a
+multi-line doc comment with tags: `@param` for every parameter, however obvious its name,
+`@returns`, and `@throws` for every error thrown or propagated. Parameters, return values, and
+errors are described only in their tags, never in prose. A function you edit gets its doc comment
+brought to this shape even if you did not write it; deadlines and reviewer preference do not change
+that. Tests: no doc comments on test cases, the title carries the intent; shared helpers get a
+one-line summary.
 
 ## Spelling (cspell)
 

@@ -1,4 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
+# `**/` also matches root-level files, so the checks reach README.md, package.json and the rest.
+glob_matcher: doublestar
+
 pre-commit:
   files: git diff --cached --name-only --diff-filter=ACMR
   commands: &checks
@@ -42,18 +45,11 @@ pre-commit:
     # the root tsconfig.json in its glob makes it run on every check, even with no TypeScript file.
     declarations:
       priority: 2
-      glob: ["**/*.{ts,tsx,mts,cts}", "*.{ts,tsx,mts,cts}", "tsconfig.json"]
+      glob: ["**/*.{ts,tsx,mts,cts}", "tsconfig.json"]
       run: "node scripts/check-declarations.ts"
     type-scripts:
       priority: 3
-      glob:
-        [
-          "scripts/*.ts",
-          "scripts/**/*.ts",
-          "scripts/tsconfig.json",
-          "tsconfig.json",
-          "package.json",
-        ]
+      glob: ["scripts/**/*.ts", "scripts/tsconfig.json", "tsconfig.json", "package.json"]
       run: "npx tsc -p scripts/tsconfig.json --noEmit"
 
 check:
