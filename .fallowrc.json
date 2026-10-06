@@ -1,8 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "entry": ["hooks/register.tsx"],
+  "entry": [
+    "hooks/register.tsx",
+    "scripts/check-declarations.ts",
+    "tests/**/*.test.ts",
+    "tests/**/*.test.tsx"
+  ],
   "ignoreExportsUsedInFile": true,
   "ignoreDependencies": [
+    "claude-code",
     "cspell",
     "fallow",
     "lefthook",

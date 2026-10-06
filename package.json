@@ -10,12 +10,14 @@
     "check:security": "fallow security",
     "fix": "lefthook run check --commands lint,md,fmt && fallow fix --yes --no-create-config",
     "prepare": "test -d .git && lefthook install || true",
-    "test": "claude plugin test ."
+    "test": "claude plugin test .",
+    "declarations": "claude --plugin-dir ."
   },
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.1.0",
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
+    "@types/node": "^22.20.5",
     "cspell": "^10.3.0",
     "fallow": "^3.31.0",
     "lefthook": "^2.1.0",
@@ -31,6 +33,6 @@
     }
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   }
 }

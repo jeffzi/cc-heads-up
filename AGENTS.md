@@ -16,9 +16,12 @@ A Claude Code mod: a plugin whose hooks module Claude Code loads from source, wi
 - JSX compiles against the global `h`, never React. Elements come from `$.ui.resolve(e)`.
 - Tests import their kit from `claude-code/testing` and run only under `claude plugin test`.
 - The API's TypeScript declarations are Claude Code's own and are never committed. Claude Code
-  writes them to `.claude-plugin/types/` (gitignored) each time it loads the mod, so run
-  `claude --plugin-dir .` once after cloning. Until then `tsc` and the type-aware lint cannot
-  resolve `claude-code`. CI has no copy and skips those two checks.
+  writes them to `.claude-plugin/types/` (gitignored) each time it loads the mod. Set them up with
+  `npm run declarations`, which starts the Claude Code version pinned in `package-lock.json` with
+  this folder loaded; quit it once it has started. This needs a logged-in Claude Code. Without one,
+  run `LEFTHOOK_EXCLUDE=declarations,type,typelint npm run check`, which skips the guard, `tsc`, and
+  the type-aware lint, as CI does. Nothing has to be remembered: `npm run check` names the command
+  when the declarations are missing and notes it when another Claude Code version wrote them.
 
 ## Commands
 

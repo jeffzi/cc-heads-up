@@ -57,10 +57,11 @@ jobs:
         run: npm test
 
       # Claude Code's API declarations are all rights reserved and stay out of the
-      # repository. Without them `claude-code` does not resolve, so the two type
-      # checks run only on a machine where Claude Code has loaded the mod.
+      # repository. Without them `claude-code` does not resolve, so the guard that
+      # demands them and the two type checks that need them run only on a machine
+      # where Claude Code has loaded the mod.
       - name: Check
         if: runner.os == 'Linux'
         env:
-          LEFTHOOK_EXCLUDE: type,typelint
+          LEFTHOOK_EXCLUDE: declarations,type,typelint
         run: npm run check && git diff --exit-code
