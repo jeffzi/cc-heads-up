@@ -1,0 +1,7 @@
+{
+  "name": "heads-up",
+  "version": "0.1.0",
+  "description": "Mirrors your prompt draft at the top of a pane docked beside the transcript.",
+  "author": { "name": "jeffzi" },
+  "types": "./types/index.d.ts"
+}

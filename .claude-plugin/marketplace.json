@@ -1,0 +1,6 @@
+{
+  "name": "cc-heads-up",
+  "description": "The heads-up mod for Claude Code: your prompt draft mirrored at the top of the screen.",
+  "owner": { "name": "jeffzi" },
+  "plugins": [{ "name": "heads-up", "source": "./" }]
+}

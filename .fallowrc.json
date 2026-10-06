@@ -1,10 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "entry": [
-    "hooks/register.tsx",
-    "scripts/check-declarations.ts",
-    "tests/**/*.test.ts",
-    "tests/**/*.test.tsx"
+  "entry": ["hooks/register.tsx", "scripts/check-declarations.ts"],
+  "framework": [
+    {
+      "name": "claude-plugin-test",
+      "enablers": ["@anthropic-ai/claude-code"],
+      "entryPoints": ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+      "entryPointRole": "test"
+    }
   ],
   "ignoreExportsUsedInFile": true,
   "ignoreDependencies": [
