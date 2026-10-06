@@ -1,5 +1,7 @@
+import type { NextResult, PaneCloseInput } from "claude-code";
 import { describe, expect, test } from "claude-code/testing";
 
+import { remembersClose } from "../hooks/register";
 import {
   PANE,
   REASON,
@@ -13,6 +15,19 @@ import {
 } from "./fake-engine";
 
 const NOTICE = /^.*fullscreen layout.*110 columns.*\/heads-up closes.*$/;
+
+const PERSON_CLOSE: PaneCloseInput = { id: PANE, origin: { kind: "person" } };
+
+type CloseCase = { name: string; result: NextResult<"ui.close">; isRemembered: boolean };
+
+const PERSON_CLOSES: readonly CloseCase[] = [
+  { name: "is remembered once the pane closed", result: { value: undefined }, isRemembered: true },
+  {
+    name: "is not remembered when a hook beneath denied it",
+    result: { deny: "the pane is busy" },
+    isRemembered: false,
+  },
+];
 
 describe("session start", () => {
   test("opens the pane unasked, asking 50 columns docked and 1 row inline", async ($, on) => {
@@ -159,6 +174,16 @@ describe("a closed pane", () => {
 
     expect(fake.opens).toHaveLength(2);
   });
+});
+
+describe("the person's close with the close mark or key", () => {
+  for (const close of PERSON_CLOSES) {
+    test(close.name, () => {
+      const isRemembered = remembersClose(PERSON_CLOSE, close.result);
+
+      expect(isRemembered).toBe(close.isRemembered);
+    });
+  }
 });
 
 describe("pane drawing", () => {

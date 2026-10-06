@@ -1,5 +1,14 @@
 import { atom, read, update } from "claude-code";
-import type { EngineInterface, On, PromptBox, Register, UiOpenResult } from "claude-code";
+import type {
+  EngineInterface,
+  Frozen,
+  NextResult,
+  On,
+  PaneCloseInput,
+  PromptBox,
+  Register,
+  UiOpenResult,
+} from "claude-code";
 
 import type { MirroredDraft } from "../types";
 import { drawPane, PANE_ID } from "./pane";
@@ -163,6 +172,20 @@ function mirrorDraft(on: On): void {
 }
 
 /**
+ * Whether a close of the pane stays remembered for the rest of the session, so that the next
+ * session start, a hot reload's included, does not open the pane unasked. The person's close
+ * (mark or key) and a plugin's `$.ui.close` are remembered once carried out; a close a hook
+ * beneath denied is not, and neither is an `unload`, which drops a pane rather than closing it.
+ *
+ * @param e - The close as the `ui.close` hook heard it.
+ * @param closed - What the rest of the chain answered for the close.
+ * @returns Whether to mark the pane closed.
+ */
+export function remembersClose(e: Frozen<PaneCloseInput>, closed: NextResult<"ui.close">): boolean {
+  return e.origin.kind !== "unload" && closed.deny === undefined;
+}
+
+/**
  * Wires the session-start pane open, the `/heads-up` toggle, the `ui.close` memory of a
  * person-closed pane, the prompt-draft mirroring, and the `Pane` render.
  *
@@ -189,12 +212,9 @@ export const register: Register = (on) => {
 
   on("command.run", { command: COMMAND }, async ($) => ({ text: await togglePane($) }));
 
-  // Only the person's close (mark or key) and a plugin's `$.ui.close` reach this hook: Claude
-  // Code drops a pane on `unload` before any hook hears of it, so a dropped pane never marks it
-  // closed.
   on("ui.close", { id: PANE_ID }, async ($, e, next) => {
     const closed = await next(e);
-    if (closed.deny === undefined) {
+    if (remembersClose(e, closed)) {
       await update($, isClosed, () => true);
     }
 
