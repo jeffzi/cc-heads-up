@@ -17,8 +17,19 @@ export type DraftLayout = {
   cursor: CursorCell;
 };
 
-const isHighSurrogate = (unit: number): boolean => unit >= 0xd8_00 && unit <= 0xdb_ff;
-const isLowSurrogate = (unit: number): boolean => unit >= 0xdc_00 && unit <= 0xdf_ff;
+/** Splits a line into user-perceived characters: an emoji sequence or a flag is one segment. */
+const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+
+// Walks the segments rather than calling `containing`: in Claude Code's engine, `containing` at
+// the start of a character made of several code units returns it merged with the one before it.
+function characterAt(line: string, column: number): Intl.SegmentData | undefined {
+  for (const part of graphemes.segment(line)) {
+    if (column < part.index + part.segment.length) {
+      return part;
+    }
+  }
+  return undefined;
+}
 
 /**
  * Lays out a draft as display lines, one per draft line, with the cursor's line split around the
@@ -27,9 +38,10 @@ const isLowSurrogate = (unit: number): boolean => unit >= 0xdc_00 && unit <= 0xd
  * An empty draft gives a single empty line with the cursor at its end.
  *
  * @param text - The draft, its lines separated by "\n".
- * @param cursor - The cursor's offset in `text`, in UTF-16 code units. An offset between the two
- *   units of a surrogate pair moves back to the pair's start, so the cell covers the whole
- *   character.
+ * @param cursor - The cursor's offset in `text`, in UTF-16 code units. An offset inside a
+ *   user-perceived character (a surrogate pair, an emoji with a skin tone or variation selector, a
+ *   flag, a joined emoji sequence) moves back to that character's start, so the cell covers the
+ *   whole character.
  * @returns The display lines and the cursor's line split before, under and after the cursor.
  */
 export function layoutDraft(text: string, cursor: number): DraftLayout {
@@ -37,19 +49,17 @@ export function layoutDraft(text: string, cursor: number): DraftLayout {
   const lineStart = head.lastIndexOf("\n") + 1;
   const breakAfter = text.indexOf("\n", cursor);
   const line = text.slice(lineStart, breakAfter === -1 ? text.length : breakAfter);
-  let column = cursor - lineStart;
-  if (isLowSurrogate(line.charCodeAt(column)) && isHighSurrogate(line.charCodeAt(column - 1))) {
-    column -= 1;
-  }
-  const point = line.codePointAt(column);
-  const under = point === undefined ? " " : String.fromCodePoint(point);
+  const cell = characterAt(line, cursor - lineStart);
   return {
     lines: text.split("\n"),
     cursorLine: head.split("\n").length - 1,
-    cursor: {
-      before: line.slice(0, column),
-      under,
-      after: point === undefined ? "" : line.slice(column + under.length),
-    },
+    cursor:
+      cell === undefined
+        ? { before: line, under: " ", after: "" }
+        : {
+            before: line.slice(0, cell.index),
+            under: cell.segment,
+            after: line.slice(cell.index + cell.segment.length),
+          },
   };
 }

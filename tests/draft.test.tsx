@@ -231,6 +231,11 @@ describe("an edit in the prompt box", () => {
       expected: drawn(["a😀b"], ["😀"]),
     },
     {
+      name: "inverts a whole joined emoji sequence under the cursor",
+      change: { text: "a👩‍💻b", cursor: 0, start: 1, end: 1, inputText: "" },
+      expected: drawn(["a👩‍💻b"], ["👩‍💻"]),
+    },
+    {
       name: "draws an inverted space at the end of a line before a line break",
       change: { text: "ab\ncd", cursor: 5, start: 2, end: 2, inputText: "" },
       expected: drawn(["ab ", "cd"], [" "]),

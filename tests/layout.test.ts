@@ -94,6 +94,96 @@ const cases: readonly Case[] = [
     },
   },
   {
+    name: "covers an emoji with a skin tone when the cursor is on its start",
+    text: "a👍🏽b",
+    cursor: 1,
+    expected: {
+      lines: ["a👍🏽b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "👍🏽", after: "b" },
+    },
+  },
+  {
+    name: "covers an emoji with a skin tone when the cursor is on the skin tone",
+    text: "a👍🏽b",
+    cursor: 3,
+    expected: {
+      lines: ["a👍🏽b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "👍🏽", after: "b" },
+    },
+  },
+  {
+    name: "covers a character with its variation selector",
+    text: "a❤️b",
+    cursor: 1,
+    expected: {
+      lines: ["a❤️b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "❤️", after: "b" },
+    },
+  },
+  {
+    name: "covers a character when the cursor is on its variation selector",
+    text: "a❤️b",
+    cursor: 2,
+    expected: {
+      lines: ["a❤️b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "❤️", after: "b" },
+    },
+  },
+  {
+    name: "covers a whole flag when the cursor is on its first letter",
+    text: "a🇫🇷b",
+    cursor: 1,
+    expected: {
+      lines: ["a🇫🇷b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "🇫🇷", after: "b" },
+    },
+  },
+  {
+    name: "covers a whole flag when the cursor falls inside its second letter",
+    text: "a🇫🇷b",
+    cursor: 4,
+    expected: {
+      lines: ["a🇫🇷b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "🇫🇷", after: "b" },
+    },
+  },
+  {
+    name: "covers a whole joined emoji sequence when the cursor is on its start",
+    text: "a👩‍💻b",
+    cursor: 1,
+    expected: {
+      lines: ["a👩‍💻b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "👩‍💻", after: "b" },
+    },
+  },
+  {
+    name: "covers a whole joined emoji sequence when the cursor is on its last emoji",
+    text: "a👩‍💻b",
+    cursor: 4,
+    expected: {
+      lines: ["a👩‍💻b"],
+      cursorLine: 0,
+      cursor: { before: "a", under: "👩‍💻", after: "b" },
+    },
+  },
+  {
+    name: "covers an emoji sequence ending a line without reaching the next line",
+    text: "ab👍🏽\ncd",
+    cursor: 4,
+    expected: {
+      lines: ["ab👍🏽", "cd"],
+      cursorLine: 0,
+      cursor: { before: "ab", under: "👍🏽", after: "" },
+    },
+  },
+  {
     name: "keeps a long line whole on one display line",
     text: LONG_LINE,
     cursor: 0,
