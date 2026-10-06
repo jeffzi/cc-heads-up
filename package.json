@@ -2,7 +2,7 @@
   "name": "cc-heads-up",
   "version": "0.0.0",
   "private": true,
-  "description": "Claude Code mod that mirrors your prompt draft and the latest reply at the top of a docked side pane, so you don't have to keep looking at the bottom of the screen.",
+  "description": "Claude Code mod that mirrors your prompt draft at the top of a docked side pane, so you don't have to keep looking at the bottom of the screen.",
   "license": "MIT",
   "type": "module",
   "scripts": {

@@ -26,10 +26,13 @@ A Claude Code mod: a plugin whose hooks module Claude Code loads from source, wi
 ## Commands
 
 - `npm test` — `claude plugin test .`; runs every `*.test.ts` and `*.test.tsx` against the engine
+- `npm run declarations` — start the pinned Claude Code with this folder loaded, so it writes the
+  API declarations; quit it once it has started. Needs a logged-in Claude Code.
 - `npm run check` — every pre-commit hook over all tracked and untracked files: lint, markdown,
-  formatting, workflow lint/audit, type-aware lint, dead code, spelling, types, then the mod's own
-  load check (`claude plugin validate --strict`). The lint, markdown, and formatting hooks rewrite
-  files in place. Run before committing.
+  formatting, workflow lint/audit, the declarations guard, type-aware lint, dead code, spelling,
+  types (the mod, and the scripts under `scripts/`), then the mod's own load check
+  (`claude plugin validate --strict`). The lint, markdown, and formatting hooks rewrite files in
+  place. Run before committing.
 - `npm run fix` — auto-fix lint, markdown, and formatting, then remove unused exports, dependencies,
   and enum members (`fallow fix`). Deletes code — review the diff before committing.
 - `npm run check:security` — surface security candidates (`fallow security`). Candidates need
